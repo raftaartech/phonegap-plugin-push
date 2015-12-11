@@ -151,7 +151,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
                     try {
                         // If object contains message keys promote each value to the root of the bundle
                         JSONObject data = new JSONObject((String) json);
-                        if ( data.has(ALERT) || data.has(MESSAGE) || data.has(BODY) || data.has(TITLE) ) {
+                        if ( data.has(ALERT) || data.has(MESSAGE) || data.has(BODY) || data.has(TITLE)) {
                             Iterator<String> jsonIter = data.keys();
                             while (jsonIter.hasNext()) {
                                 String jsonKey = jsonIter.next();
@@ -196,6 +196,18 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         // Send a notification if there is a message or title, otherwise just send data
         String message = extras.getString(MESSAGE);
         String title = extras.getString(TITLE);
+
+	// If message is JSON, get parse it
+	if ( message instanceof String && ((String) message).startsWith("{") ) {
+	    Log.d(LOG_TAG, "showNotificationIfPossible extracting nested message data");
+	    try {
+		JSONObject data = new JSONObject((String) message);
+		message = data.getString("text");
+		extras.putString(MESSAGE, message);
+	    } catch( JSONException e) {
+		Log.e(LOG_TAG, "showNotificationIfPossible: JSON exception");
+	    }
+	}
 
         Log.d(LOG_TAG, "message =[" + message + "]");
         Log.d(LOG_TAG, "title =[" + title + "]");
