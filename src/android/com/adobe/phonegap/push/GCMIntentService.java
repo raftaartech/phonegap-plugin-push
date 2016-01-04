@@ -197,23 +197,26 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         String message = extras.getString(MESSAGE);
         String title = extras.getString(TITLE);
 
-	// If message is JSON, get parse it
-	if ( message instanceof String && ((String) message).startsWith("{") ) {
-	    Log.d(LOG_TAG, "showNotificationIfPossible extracting nested message data");
-	    try {
-		JSONObject data = new JSONObject((String) message);
-		message = data.getString("text");
-		extras.putString(MESSAGE, message);
-	    } catch( JSONException e) {
-		Log.e(LOG_TAG, "showNotificationIfPossible: JSON exception");
-	    }
-	}
+        // If message is JSON, get parse it
+        if (title == null) {
+            title = "limo support";
+            extras.putString(TITLE, title);
+        }
+
+        if ( message instanceof String && ((String) message).startsWith("{") ) {
+            try {
+                JSONObject data = new JSONObject((String) message);
+                message = data.getString("text");
+                extras.putString(MESSAGE, message);
+            } catch( JSONException e) {
+                Log.e(LOG_TAG, "showNotificationIfPossible: JSON exception");
+            }
+        }
 
         Log.d(LOG_TAG, "message =[" + message + "]");
         Log.d(LOG_TAG, "title =[" + title + "]");
 
-        if ((message != null && message.length() != 0) ||
-                (title != null && title.length() != 0)) {
+        if ((message != null && message.length() != 0) || (title != null && title.length() != 0)) {
 
             Log.d(LOG_TAG, "create notification");
 
