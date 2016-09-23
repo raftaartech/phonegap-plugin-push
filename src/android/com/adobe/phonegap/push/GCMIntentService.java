@@ -196,6 +196,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         // Send a notification if there is a message or title, otherwise just send data
         String message = extras.getString(MESSAGE);
         String title = extras.getString(TITLE);
+        String hotline = extras.getString("kon_message_type");
 
         // If message is JSON, get parse it
         if (title == null) {
@@ -216,7 +217,7 @@ public class GCMIntentService extends GcmListenerService implements PushConstant
         Log.d(LOG_TAG, "message =[" + message + "]");
         Log.d(LOG_TAG, "title =[" + title + "]");
 
-        if ((message != null && message.length() != 0) || (title != null && title.length() != 0)) {
+        if (((message != null && message.length() != 0) || (title != null && title.length() != 0)) && hotline == null){
 
             Log.d(LOG_TAG, "create notification");
 
